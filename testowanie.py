@@ -5,17 +5,18 @@ import tkinter.messagebox as messagebox
 
 class SudokuGenerator:
     def __init__(self, master):
-        self.number_buttons = []  # Przechowuje referencje do przycisków cyfr
+        self.number_buttons = []
         self.difficulty = 40
-        self.grid = [[0 for _ in range(9)] for _ in range(9)]
+        self.grid = [[0 for _ in range(9)] for _ in range(9)]   # Stworzenie kratki 9x9
         self.master = master
         self.master.title("Sudoku Generator")
-        self.master.geometry("540x694")
-        self.master.resizable(False, False)
+        self.master.geometry("540x694")     # Rozmiar
+        self.master.resizable(False, False)     # Zablokowanie możliwości powiększania
         self.master.configure(bg="white")
         self.canvas = tk.Canvas(self.master, width=540, height=540, bg="#424549")
         self.canvas.pack()
         self.cell_size = 540 // 9
+
         self.draw_grid()
         self.create_number_buttons()
         self.create_generate_button()
@@ -25,7 +26,7 @@ class SudokuGenerator:
         menu_bar = tk.Menu(self.master)
         self.master.config(menu=menu_bar)
 
-        # Zakładka "Poziom trudności"
+        # Zakładka poziomu trudności
         level_menu = tk.Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label="Poziom trudności", menu=level_menu)
 
@@ -35,12 +36,13 @@ class SudokuGenerator:
         level_menu.add_command(label="Hard", command=self.set_difficulty_hard)
         level_menu.add_command(label="Veteran", command=self.set_difficulty_veteran)
 
-        self.selected_row = None  # Wiersz aktualnie zaznaczonego pola
-        self.selected_col = None  # Kolumna aktualnie zaznaczonego pola
+        # Zmienne zapisujące obecnie wybrane pola
+        self.selected_row = None
+        self.selected_col = None
 
     def draw_grid(self):
         for i in range(10):
-            line_width = 4 if i % 3 == 0 else 1
+            line_width = 4 if i % 3 == 0 else 1     # Sprawia, aby co trzecia linia była pogrubiona
             self.canvas.create_line(i * self.cell_size, 0, i * self.cell_size, 540, width=line_width, fill="white")
             self.canvas.create_line(0, i * self.cell_size, 540, i * self.cell_size, width=line_width, fill="white")
 
@@ -55,7 +57,7 @@ class SudokuGenerator:
                                activebackground="#61656b", font=("Arial", 10, "bold"))
             button.grid(row=0, column=i - 1, padx=5, pady=5)
             button.bind("<Button-1>",
-                        lambda event, num=i: self.place_number(num))  # Dodajemy obsługę zdarzenia kliknięcia
+                        lambda event, num=i: self.place_number(num))
             self.number_buttons.append(button)
 
     def create_generate_button(self):
@@ -169,16 +171,14 @@ class SudokuGenerator:
         return self.difficulty
 
     def set_difficulty_veteran(self):
-        self.difficulty = 2
+        self.difficulty = 70
         return self.difficulty
 
     def select_cell(self, event):
-        # Obliczamy indeks wybranego pola
         col = event.x // self.cell_size
         row = event.y // self.cell_size
 
-        # Zaznaczamy wybrane pole na siatce
-        self.canvas.delete("highlight")  # Usuwamy ewentualne poprzednie zaznaczenie
+        self.canvas.delete("highlight")
         self.canvas.create_rectangle(col * self.cell_size, row * self.cell_size,
                                      (col + 1) * self.cell_size, (row + 1) * self.cell_size,
                                      outline="yellow", width=2, tags="highlight")
